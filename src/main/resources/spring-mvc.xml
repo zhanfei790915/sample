@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd 
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context.xsd 
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!-- spring mvc 注解配置 -->
+    <mvc:annotation-driven />
+    <!-- spring mvc 控制器自动扫描类路径 -->
+    <context:component-scan base-package="app03a.controller"/><!-- 控制器类扫描 -->
+    <context:component-scan base-package="app03a.service"/><!-- 服务类扫描 -->
+	<!-- resource 静态资源  用户在访问mapping路径的时候，会自动映射到服务器端应用本地项目路径location设置路径-->
+	<!-- study use -->
+	<mvc:resources location="/WEB-INF/css/" mapping="/css/**" />
+	<mvc:resources location="/WEB-INF/html/" mapping="/*.html" />
+	<!-- jfinal ui use -->
+	<mvc:resources location="/ui/" mapping="/ui/**" />
+	<mvc:resources location="/view/" mapping="/view/**" />
+	<mvc:resources location="/*.ico" mapping="/*.ico" />
+	<!--jsp ViewResolver 使用beetl视图就必须注释JSP视图--> 
+	<!-- 
+    <bean  
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
+        <property name="viewClass"  
+            value="org.springframework.web.servlet.view.JstlView" />  
+        <property name="prefix" value="/WEB-INF/jsp/" />  
+        <property name="suffix" value=".jsp" />  
+    </bean>
+     -->
+    <!-- beetle configuration 使用JSP视图可以不用注释beetl视图-->
+    <bean id="beetlConfig" class="org.beetl.ext.spring.BeetlGroupUtilConfiguration" init-method="init"/>
+    <bean id="viewResolver" class="org.beetl.ext.spring.BeetlSpringViewResolver">
+    	<property name="contentType" value="text/html;charset=UTF-8"/>
+    </bean>
+    <!-- action mapping 传统访问路径映射定义，项目中目前都使用注解定义路径映射，可实现一个控制器定义N个路径-->
+	<bean name="/product_input.action" class="app03a.controller.InputProductController" />
+	<bean name="/product_save.action"  class="app03a.controller.SaveProductController" />
+    <!-- 配置springMVC处理上传文件的配置 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8"/>
+        <property name="maxUploadSize" value="10485760000"/>
+        <property name="maxInMemorySize" value="40960"/>
+    </bean>
+</beans>
